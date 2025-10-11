@@ -22,5 +22,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-// Samer wrote here Test
