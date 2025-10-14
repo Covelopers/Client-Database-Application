@@ -54,3 +54,30 @@ Providing clear documentation/notes  (see Documentation section below)
     Database Use: The system must use a database (e.g., SQLite, MySQL, PostgreSQL, etc.) for client data storage.
 
 -------
+
+### Managing your local posgresSQL database
+
+1. First you have to install porgresSQL on your computer, and make a new database. Call it something suitable, and remember the port and password used.
+
+2. Configure the .env.example file. Remember to remove the .example in the file name so that .env works
+
+    DATABASE_URL="postgresql://<"username (if added, if not leave blank)">:<'password'>@localhost:<'port number'>/<'database_name'>?schema=public"
+    DATABASE_URL="postgresql://<username>:<password>@localhost:<port>/<database_name>?schema=public"
+
+Example
+
+    DATABASE_URL="postgresql://postgres:password@localhost:5432/mydb?schema=public"
+
+3. run the following in the terminal of vscode to generate the Prisma client. Run this in App directory
+
+    npx prisma generate
+
+4. Then add migrations to yur database, to generate the tables using the prisma.schema
+
+    npx prisma migrate dev
+
+5. Then finally, to add some data into the database run in the App directory the seed
+
+    npx tsx prisma/seed.ts
+
+-------
