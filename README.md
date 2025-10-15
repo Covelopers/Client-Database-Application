@@ -60,7 +60,7 @@ Providing clear documentation/notes  (see Documentation section below)
 1. First you have to install porgresSQL on your computer, and make a new database. Call it something suitable, and remember the port and password used.
 
 2. Configure the .env.example file. Remember to remove the .example in the file name so that .env works
-
+```env
     DATABASE_URL="postgresql://<"username (if added, if not leave blank)">:<'password'>@localhost:<'port number'>/<'database_name'>?schema=public"
     DATABASE_URL="postgresql://<username>:<password>@localhost:<port>/<database_name>?schema=public"
 
