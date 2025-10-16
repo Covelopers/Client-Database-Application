@@ -14,3 +14,14 @@ a {
 * {
   box-sizing: border-box;
 }
+
+[data-nextjs-devtools-button],
+[data-next-badge-root],
+[data-next-badge] {
+  display: none !important;
+}
+
+button[data-nextjs-devtools-button] {
+  display: none !important;
+  background: red !important;
+}
