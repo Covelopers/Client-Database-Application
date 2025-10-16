@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AddClientPage() {
   const [fullName, setFullName] = useState("");
@@ -102,7 +103,9 @@ export default function AddClientPage() {
         <button type="submit">Add Client</button>
       </form>
       <br />
-      <a href="/">Back to Client List</a>
+      <button>
+        <Link href="/">Back to Client List</Link>
+      </button>
     </div>
   );
 }
