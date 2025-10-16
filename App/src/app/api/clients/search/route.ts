@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-const prisma = new PrismaClient()
+import { db } from "~/server/db";
 
 // There is only one query that accepts string
 const searchSchema = z.object({
@@ -25,7 +23,7 @@ export const GET = async (req: NextRequest) => {
         const { query } = parseResult.data
 
         // This finds all of the data in the following columns that is LIKE (contains) the query written by the user
-        const clients = await prisma.client.findMany({
+        const clients = await db.client.findMany({
             where: {
                 OR: [
                     { fullName: { contains: query, mode: "insensitive" } },

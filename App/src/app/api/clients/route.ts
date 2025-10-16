@@ -1,12 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-const prisma = new PrismaClient()
+import { db } from "~/server/db";
 
 
 const clientSchema = z.object({
     fullName: z.string().min(1, "Full name is required"),
-    email: z.string().email("Invalid email address"),
+    email: z.string().email("Invalid email address").optional(),
     phoneNumber: z.string().optional(),
     address: z.string().optional(),
     notes: z.string().optional(),
@@ -17,7 +17,7 @@ const clientSchema = z.object({
 // To run use this GET request: http://localhost:3000/api/clients
 const GET = async (req: Request) => {
     try {
-        const clients = await prisma.client.findMany({ take: 50, skip: 0, orderBy: { fullName: 'asc' }, });
+        const clients = await db.client.findMany({ take: 50, skip: 0, orderBy: { fullName: 'asc' }, });
         return NextResponse.json({ clients });
     }
     catch (error: any) {
@@ -37,7 +37,7 @@ const POST = async (req: Request) => {
         }
         const { fullName, email, phoneNumber, address, notes } = parsed.data;
 
-        const newClient = await prisma.client.create({
+        const newClient = await db.client.create({
             data: {
                 fullName, email, phoneNumber, address, notes
             }
@@ -45,8 +45,17 @@ const POST = async (req: Request) => {
         return NextResponse.json({ newClient });
     }
     catch (error: any) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2002") {
+                return NextResponse.json({ msg: 'Client email already used', error: error.message }, { status: 400 });
+            }
+        }
         return NextResponse.json({ msg: 'Failed to post client information', error: error.message }, { status: 500 });
     }
 }
 
 export { GET, POST };
+
+
+
+
