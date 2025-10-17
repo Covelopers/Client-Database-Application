@@ -46,7 +46,8 @@ const POST = async (req: Request) => {
     }
     catch (error: any) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === "P2002") {
+            if (error.code === "P2002") // if (error?.code === "P2002") use this only for testing,
+            {
                 return NextResponse.json({ msg: 'Client email already used', error: error.message }, { status: 400 });
             }
         }
@@ -55,7 +56,3 @@ const POST = async (req: Request) => {
 }
 
 export { GET, POST };
-
-
-
-

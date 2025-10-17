@@ -8,6 +8,8 @@ const searchSchema = z.object({
 });
 // To run use this GET request : http://localhost:3000/api/clients/search?query=whatever_you_want_to_type
 
+// export const GET = async (req: Request) => {  ONYL USE THIS WHEN TESTING
+
 export const GET = async (req: NextRequest) => {
     try {
         // Here the backend get the url, and takes the param after http://localhost:3000/api/clients/search?query=
