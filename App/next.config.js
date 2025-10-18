@@ -1,10 +1,17 @@
-/**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
- */
-import "./src/env.js";
+// // next.config.js
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+//   // Required for static export to work with Electron
+//   output: 'export',
+//   // Optional: Specify the directory if you don't want 'out'
+//   // distDir: 'dist', 
+//   // ... your existing t3 config ...
+// };
 
-/** @type {import("next").NextConfig} */
-const config = {};
+// module.exports = nextConfig;
 
-export default config;
+
+/** @type {import('next').NextConfig} */
+module.exports = {
+  images: { unoptimized: true },
+};
