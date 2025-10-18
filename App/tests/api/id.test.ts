@@ -19,6 +19,8 @@ const mockedDb = vi.mocked(db, true);
 describe("Clients API - GET /api/clients/[id]", () => {
     it("returns client details when found", async () => {
         const now = new Date();
+
+        // This is the mocked data from the database
         const mockClient = {
             id: "abc123",
             fullName: "John Doe",
@@ -32,6 +34,7 @@ describe("Clients API - GET /api/clients/[id]", () => {
 
         mockedDb.client.findUnique.mockResolvedValue(mockClient);
 
+        // The id matches what is in the mocked client
         const response = await GET(
             new Request("http://localhost:3000/api/clients/abc123"),
             { params: Promise.resolve({ id: "abc123" }) }
@@ -39,6 +42,7 @@ describe("Clients API - GET /api/clients/[id]", () => {
 
         const json = await response.json();
 
+        // The result will be the data that I mocked, with the correct status code
         expect(response.status).toBe(200);
         expect(json.details).toEqual({
             ...mockClient,
@@ -46,6 +50,7 @@ describe("Clients API - GET /api/clients/[id]", () => {
             updatedAt: mockClient.updatedAt.toISOString(),
         });
 
+        // This is how prisma finds the client from the db
         expect(mockedDb.client.findUnique).toHaveBeenCalledWith({
             where: { id: "abc123" },
         });
@@ -57,6 +62,7 @@ describe("Clients API - GET /api/clients/[id]", () => {
             { params: Promise.resolve({ id: "" }) }
         );
 
+        // This is expected because Zod expects a string of min 1 to function
         const json = await response.json();
         expect(response.status).toBe(400);
         expect(json.msg).toBe("Validation failed");
@@ -70,6 +76,7 @@ describe("Clients API - GET /api/clients/[id]", () => {
             { params: Promise.resolve({ id: "unknown" }) }
         );
 
+        // This is expected when prisma can not find the id in the db
         const json = await response.json();
         expect(response.status).toBe(404);
         expect(json.msg).toBe("Failed to find client information");

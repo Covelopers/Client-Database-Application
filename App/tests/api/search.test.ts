@@ -20,6 +20,8 @@ const mockedDb = vi.mocked(db, true);
 describe("Clients API - SEARCH", () => {
     it("returns clients matching the query", async () => {
         const now = new Date();
+
+        // These are two clients in the database
         const mockClients = [
             {
                 id: "1",
@@ -43,6 +45,7 @@ describe("Clients API - SEARCH", () => {
             },
         ];
 
+        // It Mocked it, so that it will only return the first client based on the qeury "john"
         mockedDb.client.findMany.mockResolvedValue([mockClients[0]]);
 
         const response = await GET(
@@ -50,6 +53,7 @@ describe("Clients API - SEARCH", () => {
         );
         const json = await response.json();
 
+        // Here is the result including how prisma gets the result, and the mode
         expect(response.status).toBe(200);
         expect(json).toEqual([
             {
@@ -80,6 +84,7 @@ describe("Clients API - SEARCH", () => {
 
         const json = await response.json();
 
+        // This returns a array with everything, because nothing matches a empty string
         expect(response.status).toBe(200);
         expect(Array.isArray(json)).toBe(true);
         expect(mockedDb.client.findMany).toHaveBeenCalledWith({

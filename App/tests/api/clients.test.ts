@@ -57,7 +57,7 @@ describe("Clients API - GET", () => {
             },
         ]);
 
-        // Call GET handler
+        // Call GET handler, and recieves the exact result I mocked. As well as the requirement of take 50, skip 0 and order by.
         const response = await GET(new Request("http://localhost/api/clients"));
         const json = await response.json();
 
@@ -126,6 +126,7 @@ describe("Clients API - POST", () => {
         );
         const json = await response.json();
 
+        // This is the expected result for a valid post request
         expect(response.status).toBe(200);
         expect(json.newClient).toEqual({
             id: "ckx789ghi",
@@ -154,12 +155,14 @@ describe("Clients API - POST", () => {
         );
         const json = await response.json();
 
+        // This is expected because fullName is required. Its a validation error because Zod expects a fullName
         expect(response.status).toBe(400);
         expect(json.msg).toBe("Validation failed");
         expect(mockedDb.client.create).not.toHaveBeenCalled();
     });
 
     it("handles unique email constraint (P2002)", async () => {
+        // Here undefined is also equal to empty "" because those data are optional
         const clientData = {
             fullName: "Charlie Brown",
             email: "existing@example.com",
@@ -181,7 +184,7 @@ describe("Clients API - POST", () => {
             })
         );
         const json = await response.json();
-
+        // Based on the above mocked rejected value, it should return these
         expect(response.status).toBe(400);
         expect(json.msg).toBe("Client email already used");
     });
