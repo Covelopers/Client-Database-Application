@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
+// import { Geist } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "Client Database Application",
@@ -9,9 +9,9 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
-  subsets: ["latin"],
-});
+// const geist = Geist({
+//   subsets: ["latin"],
+// });
 
 export default function RootLayout({
   children,
