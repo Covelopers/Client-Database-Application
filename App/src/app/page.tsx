@@ -21,7 +21,7 @@ export default function Home() {
     const timer = setTimeout(async () => {
       setIsLoading(true);
       setError(null);
-      
+
       const url = searchTerm.trim()
         ? `/api/clients/search?query=${encodeURIComponent(searchTerm.trim())}`
         : "/api/clients";
@@ -29,7 +29,7 @@ export default function Home() {
       try {
         const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to load clients.");
-        
+
         const data = await res.json();
         const clientList = searchTerm.trim() ? data : data.clients;
         setClients(clientList || []);
@@ -69,7 +69,10 @@ export default function Home() {
           <ul>
             {clients.map((client) => (
               <li key={client.id}>
-                <strong>{client.fullName}</strong> - {client.email || "No email"}
+                <Link href={`/clients/${client.id}`} style={{ textDecoration: 'underline', color: 'blue' }}>
+                  <strong>{client.fullName}</strong> - {client.email || "No email"}
+                </Link>
+
               </li>
             ))}
           </ul>

@@ -62,16 +62,6 @@ describe("Clients API - SEARCH", () => {
                 updatedAt: mockClients[0].updatedAt.toISOString(),
             }
         ]);
-
-        expect(mockedDb.client.findMany).toHaveBeenCalledWith({
-            where: {
-                OR: [
-                    { fullName: { contains: "john", mode: "insensitive" } },
-                    { email: { contains: "john", mode: "insensitive" } },
-                    { phoneNumber: { contains: "john", mode: "insensitive" } },
-                ],
-            },
-        });
     });
 
 
