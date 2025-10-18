@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "~/server/db";
+import { authWrapper } from "utils/authWrapper";
 
 // There is only one query that accepts string
 const searchSchema = z.object({
@@ -8,9 +9,9 @@ const searchSchema = z.object({
 });
 // To run use this GET request : http://localhost:3000/api/clients/search?query=whatever_you_want_to_type
 
-// export const GET = async (req: Request) => {  ONYL USE THIS WHEN TESTING
+// export const GET = authWrapper(async (req: Request) => {  ONLY USE THIS WHEN TESTING
 
-export const GET = async (req: NextRequest) => {
+export const GET = authWrapper(async (req: NextRequest) => {
     try {
         // Here the backend get the url, and takes the param after http://localhost:3000/api/clients/search?query=
         const url = new URL(req.url);
@@ -41,4 +42,4 @@ export const GET = async (req: NextRequest) => {
         return NextResponse.json({ msg: 'Failed to get client information', error: error.message }, { status: 500 });
     }
 
-}
+});
