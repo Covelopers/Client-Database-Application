@@ -16,6 +16,9 @@ model Client {
   phoneNumber String?
   address     String?
   notes       String?
+  deletedAt    DateTime?
+  lastModified DateTime @default(now())
+  revision     Int      @default(0)
 
   @@index([fullName])
 }
