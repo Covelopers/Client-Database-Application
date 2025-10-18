@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-//import styles from "./index.module.css";
 
 type Client = {
   id: string;
@@ -15,21 +14,36 @@ type Client = {
 export default function Home() {
   const [clients, setClients] = useState<Client[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchClients = async () => {
+    const timer = setTimeout(async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      const url = searchTerm.trim()
+        ? `/api/clients/search?query=${encodeURIComponent(searchTerm.trim())}`
+        : "/api/clients";
+
       try {
-        const res = await fetch("/api/clients");
+        const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to load clients.");
+        
         const data = await res.json();
-        setClients(data.clients);
+        const clientList = searchTerm.trim() ? data : data.clients;
+        setClients(clientList || []);
       } catch (err: any) {
         setError(err.message);
+        setClients([]);
+      } finally {
+        setIsLoading(false);
       }
-    };
+    }, 300);
 
-    fetchClients();
-  }, []);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
 
   return (
     <main>
@@ -38,6 +52,17 @@ export default function Home() {
         <button>
           <Link href="/add-client">Add New Client</Link>
         </button>
+
+        <div style={{ margin: '20px 0' }}>
+          <input
+            type="text"
+            placeholder="Search clients..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ padding: '8px', width: '300px', border: '1px solid #ccc' }}
+          />
+        </div>
+
         <h2>Existing Clients</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         {clients.length > 0 ? (
