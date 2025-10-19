@@ -4,7 +4,8 @@
   "private": true,
   "description": "Client database desktop application built with Next.js + RxDB + Electron",
   "author": "Your Name <youremail@example.com>",
-  "main": "main/index.cjs",
+  "type": "module",
+  "main": "main/index.js",
   "scripts": {
     "build": "next build",
     "check": "next lint && tsc --noEmit",
@@ -22,9 +23,10 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "build:electron": "tsc --project tsconfig.electron.json",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && npm run build:electron && electron .\"",
     "electron:build": "npm run build && electron-builder",
-    "dist": "set NODE_ENV=production && if exist out rmdir /s /q out && next build && next export && electron-builder --win --x64",
+    "dist": "set NODE_ENV=production && npm run build && npm run build:electron && electron-builder --win --x64",
     "dist:mac": "npm run build && electron-builder --mac",
     "dist:linux": "npm run build && electron-builder --linux"
   },
@@ -39,16 +41,16 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "electron": "^28.3.0",
     "@eslint/eslintrc": "^3.3.1",
     "@types/better-sqlite3": "^7.6.11",
     "@types/jest": "^30.0.0",
     "@types/jest-json-schema": "^6.1.4",
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.19.22",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitest/coverage-c8": "^0.33.0",
     "concurrently": "^8.2.2",
+    "electron": "^28.3.0",
     "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
     "eslint": "^9.23.0",
@@ -64,6 +66,9 @@
     "vitest": "^0.33.0",
     "wait-on": "^7.2.0"
   },
+  "optionalDependencies": {
+    "@next/swc-win32-x64-msvc": "^15.5.6"
+  },
   "ct3aMetadata": {
     "initVersion": "7.39.3"
   },
@@ -72,10 +77,20 @@
     "appId": "com.yourcompany.ClientDatabaseApp",
     "productName": "Client Database App",
     "files": [
-      "main/**/*",
-      "out/**/*",
-      "prisma/**/*",
-      "!prisma/migrations"
+      "main/**/*.js",
+      "!main/**/*.ts",
+      ".next/**/*",
+      "public/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "asarUnpack": [
+      ".next/**/*",
+      "node_modules/.prisma/**/*",
+      "node_modules/@prisma/client/**/*",
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/next/**/*",
+      "prisma/**/*"
     ],
     "directories": {
       "output": "release"
@@ -84,10 +99,16 @@
       {
         "from": "prisma/app.db",
         "to": "app.db"
+      },
+      {
+        "from": "prisma/schema.prisma",
+        "to": "schema.prisma"
       }
-    ]
-  },
-  "optionalDependencies": {
-    "@next/swc-win32-x64-msvc": "^15.5.6"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
   }
 }

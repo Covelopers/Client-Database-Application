@@ -38,7 +38,6 @@
     }
   },
   "include": [
-    "**/*.cjs",
     "**/*.js",
     "**/*.ts",
     "**/*.tsx",
@@ -50,6 +49,7 @@
     "node_modules",
     ".next",
     "out",
-    "dist"
+    "dist",
+    "main"
   ]
 }
