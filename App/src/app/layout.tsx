@@ -18,7 +18,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={geist.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

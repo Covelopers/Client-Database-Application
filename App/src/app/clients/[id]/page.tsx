@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 
+// This ensures the page works with both static and dynamic rendering
+export const dynamic = 'force-dynamic';
+
 
 type Client = {
     id: string;
