@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   distDir: 'out',
-  images: { 
-    unoptimized: true 
+  images: {
+    unoptimized: true
   },
   // This is important - tells Next.js where to find pages
   // Might need to adjust based on your structure

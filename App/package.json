@@ -4,7 +4,7 @@
   "private": true,
   "description": "Client database desktop application built with Next.js + RxDB + Electron",
   "author": "Your Name <youremail@example.com>",
-  "main": "main/index.cjs",
+  "main": "main/index.js",
   "scripts": {
     "build": "next build",
     "check": "next lint && tsc --noEmit",
@@ -22,11 +22,13 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron:build": "npm run build && electron-builder",
-    "dist": "set NODE_ENV=production && if exist out rmdir /s /q out && next build && next export && electron-builder --win --x64",
-    "dist:mac": "npm run build && electron-builder --mac",
-    "dist:linux": "npm run build && electron-builder --linux"
+    "electron:compile": "tsc --project tsconfig.electron.json",
+    "electron:compile:watch": "tsc --project tsconfig.electron.json --watch",
+    "electron:dev": "concurrently \"npm run dev\" \"npm run electron:compile:watch\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "tsc --project tsconfig.electron.json && npm run build && electron-builder",
+    "dist": "tsc --project tsconfig.electron.json && npm run build && electron-builder --win --x64",
+    "dist:mac": "tsc --project tsconfig.electron.json && npm run build && electron-builder --mac",
+    "dist:linux": "tsc --project tsconfig.electron.json && npm run build && electron-builder --linux"
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",
@@ -39,7 +41,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "electron": "^28.3.0",
     "@eslint/eslintrc": "^3.3.1",
     "@types/better-sqlite3": "^7.6.11",
     "@types/jest": "^30.0.0",
@@ -49,6 +50,7 @@
     "@types/react-dom": "^19.0.0",
     "@vitest/coverage-c8": "^0.33.0",
     "concurrently": "^8.2.2",
+    "electron": "^28.3.3",
     "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
     "eslint": "^9.23.0",
@@ -71,11 +73,19 @@
   "build": {
     "appId": "com.yourcompany.ClientDatabaseApp",
     "productName": "Client Database App",
+    "asar": true,
     "files": [
       "main/**/*",
-      "out/**/*",
+      ".next/**/*",
+      "public/**/*",
+      "node_modules/**/*",
       "prisma/**/*",
-      "!prisma/migrations"
+      "package.json",
+      "next.config.js",
+      "!prisma/migrations",
+      "!.env",
+      "!.env.local",
+      "!.env.production"
     ],
     "directories": {
       "output": "release"
@@ -85,7 +95,11 @@
         "from": "prisma/app.db",
         "to": "app.db"
       }
-    ]
+    ],
+    "win": {
+      "target": "portable",
+      "sign": null
+    }
   },
   "optionalDependencies": {
     "@next/swc-win32-x64-msvc": "^15.5.6"
