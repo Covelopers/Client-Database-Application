@@ -76,9 +76,20 @@ async function createWindow() {
             // --- 2. Next.js Server Setup ---
             const next = require('next');
             log('Next.js required');
+            // In dev, Next runs from source; in production, point to packaged standalone output
+            let nextDir;
+            if (electron_1.app.isPackaged) {
+                // When packaged, .next/standalone is unpacked to resources/app.asar.unpacked/.next/standalone
+                nextDir = path_1.default.join(process.resourcesPath, 'app.asar.unpacked', '.next', 'standalone');
+            }
+            else {
+                // In development, use your local project root (the folder with package.json)
+                nextDir = path_1.default.join(__dirname, '..');
+            }
+            log(`Next.js directory resolved to: ${nextDir}`);
             // @ts-ignore for CommonJS compatibility with Next.js
-            const nextApp = next({ dev: false, dir: appPath });
-            log('Next.js app created using dir: ' + appPath);
+            const nextApp = next({ dev: false, dir: nextDir });
+            log('Next.js app created using dir: ' + nextDir);
             const handle = nextApp.getRequestHandler();
             log('Got request handler');
             await nextApp.prepare();
